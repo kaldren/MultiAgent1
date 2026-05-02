@@ -59,4 +59,6 @@ builder.AddProject<Projects.MultiAgent1_API>("api")
 
 builder.AddProject<Projects.MultiAgent1_MigrationService>("multiagent1-migrationservice");
 
+builder.AddProject<Projects.MultiAgent1_CostEstimationAgent>("multiagent1-costestimationagent");
+
 builder.Build().Run();

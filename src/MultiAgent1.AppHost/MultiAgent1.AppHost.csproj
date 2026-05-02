@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Agents\MultiAgent1.CostEstimationAgent\MultiAgent1.CostEstimationAgent.csproj" />
     <ProjectReference Include="..\Agents\MultiAgent1.VisionAgent\MultiAgent1.VisionAgent.csproj" />
     <ProjectReference Include="..\MultiAgent1.API\MultiAgent1.API.csproj" />
     <ProjectReference Include="..\MultiAgent1.MigrationService\MultiAgent1.MigrationService.csproj" />
