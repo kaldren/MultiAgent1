@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/Agents/">
+    <Project Path="src/Agents/MultiAgent1.VisionAgent/MultiAgent1.VisionAgent.csproj" />
+  </Folder>
+  <Project Path="src/MultiAgent1.API/MultiAgent1.API.csproj" />
+  <Project Path="src/MultiAgent1.AppHost/MultiAgent1.AppHost.csproj" Id="fbbaaf65-7cf8-4849-8940-560c7f583b37" />
+  <Project Path="src/MultiAgent1.MigrationService/MultiAgent1.MigrationService.csproj" />
+  <Project Path="src/MultiAgent1.ServiceDefaults/MultiAgent1.ServiceDefaults.csproj" />
+  <Project Path="src/MultiAgent1.Shared/MultiAgent1.Shared.csproj" Id="fcc72be7-33de-4aa2-b34a-f2fd33372631" />
+</Solution>
