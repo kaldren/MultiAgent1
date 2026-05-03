@@ -3,24 +3,25 @@ using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using MultiAgent1.Shared.Models;
 using MultiAgent1.VisionAgent.Data;
+using MultiAgent1.VisionAgent.Models;
 using MultiAgent1.VisionAgent.Services;
 using System.Text.Json;
 
-namespace MultiAgent1.VisionAgent;
+namespace MultiAgent1.VisionAgent.Workers;
 
-public class Worker : IHostedService, IDisposable
+public class AgentWorker : IHostedService, IDisposable
 {
     private readonly ServiceBusClient _serviceBusClient;
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly BlobServiceClient _blobServiceClient;
-    private readonly ILogger<Worker> _logger;
+    private readonly ILogger<AgentWorker> _logger;
     private ServiceBusProcessor? _processor;
 
-    public Worker(
+    public AgentWorker(
         ServiceBusClient serviceBusClient,
         IServiceScopeFactory scopeFactory,
         BlobServiceClient blobServiceClient,
-        ILogger<Worker> logger)
+        ILogger<AgentWorker> logger)
     {
         _serviceBusClient = serviceBusClient;
         _scopeFactory = scopeFactory;
@@ -113,15 +114,26 @@ public class Worker : IHostedService, IDisposable
             _logger.LogInformation("Analysis: HasDefects={HasDefects} Summary={Summary}",
                 analysisResult.Result.HasDefects, analysisResult.Result.Summary);
 
-            var dbContext = scope.ServiceProvider.GetRequiredService<VisionAgentDbContext>(); // ← ADD
+            var dbContext = scope.ServiceProvider.GetRequiredService<VisionAgentDbContext>();
 
-            // Save to database
-            var agent = new AgentOutput
+            var agent = new AgentOutput { Result = analysisResult.Result };
+
+            dbContext.AgentOutput.Add(agent);
+            dbContext.OutboxMessages.Add(new OutboxMessage
             {
-                Result = analysisResult.Result,
-            };
-
-            await dbContext.AgentOutput.AddAsync(agent, args.CancellationToken);
+                Type = "VisionAnalysisCompleted",
+                Payload = JsonSerializer.Serialize(new VisionAnalysisCompletedEvent
+                {
+                    EventId = Guid.CreateVersion7(),
+                    AgentOutputId = agent.Id,
+                    OccurredAt = DateTimeOffset.UtcNow,
+                    Brand = analysisResult.Result.Brand,
+                    Model = analysisResult.Result.Model,
+                    Year = analysisResult.Result.Year,
+                    HasDefects = analysisResult.Result.HasDefects,
+                    Summary = analysisResult.Result.Summary,
+                })
+            });
             await dbContext.SaveChangesAsync(args.CancellationToken);
 
             await args.CompleteMessageAsync(args.Message);

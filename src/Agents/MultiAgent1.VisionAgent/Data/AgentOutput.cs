@@ -1,31 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace MultiAgent1.VisionAgent.Data;
 
-// Result JSON:
-// {
-//   "brand": "Toyota",
-//   "model": "Camry",
-//   "year": 2019,
-//   "has_defects": true,
-//   "defects": [
-//     {
-//       "type": "scratch",
-//       "severity": "minor",
-//       "location": "front_left_door",
-//       "confidence": 0.92
-//     }
-//   ],
-//   "summary": "Minor scratch detected on front-left door."
-// }
-
 public sealed class AgentOutput
 {
-    [Key]
-    public int Id { get; set; }
+    public Guid Id { get; set; } = Guid.CreateVersion7();
 
-    [Required]
     public VisionResult Result { get; set; } = new();
 
     public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;

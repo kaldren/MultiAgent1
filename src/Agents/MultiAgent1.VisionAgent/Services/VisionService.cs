@@ -25,7 +25,7 @@ public class VisionService : IVisionService
         _logger = logger;
     }
 
-    public async Task<VisionAgentResponse> AnalyzeImageAsync(
+    public async Task<AnalysisResponse> AnalyzeImageAsync(
         byte[] imageData,
         string contentType,
         CancellationToken cancellationToken)
@@ -102,7 +102,7 @@ public class VisionService : IVisionService
 
         _logger.LogInformation("Analysis complete. HasDefects={HasDefects}", visionResult.HasDefects);
 
-        return new VisionAgentResponse
+        return new AnalysisResponse
         {
             Id = Guid.NewGuid(),
             Result = visionResult,

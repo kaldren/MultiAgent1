@@ -2,7 +2,7 @@
 
 namespace MultiAgent1.VisionAgent.Models;
 
-public class VisionAgentResponse
+public class AnalysisResponse
 {
     public Guid Id { get; set; }
     public VisionResult Result { get; set; } = new();

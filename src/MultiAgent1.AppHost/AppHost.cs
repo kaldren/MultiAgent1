@@ -23,6 +23,18 @@ serviceBus.AddServiceBusTopic("inspection-photo-uploaded")
         subscription.LockDuration = TimeSpan.FromMinutes(5);
     });
 
+var outboxTopic = serviceBus.AddServiceBusTopic("vision-analysis-completed")
+    .WithProperties(topic =>
+    {
+        topic.DefaultMessageTimeToLive = TimeSpan.FromHours(1);
+    })
+    .AddServiceBusSubscription("cost-estimation-agent-subscription")
+    .WithProperties(subscription =>
+    {
+        subscription.MaxDeliveryCount = 10;
+        subscription.LockDuration = TimeSpan.FromMinutes(5);
+    });
+
 var storageBuilder = builder.AddAzureStorage("storage");
 
 if (builder.ExecutionContext.IsRunMode && builder.Environment.IsDevelopment())

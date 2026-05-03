@@ -24,12 +24,9 @@ namespace MultiAgent1.VisionAgent.Migrations
 
             modelBuilder.Entity("MultiAgent1.VisionAgent.Data.AgentOutput", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
                         .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
@@ -43,12 +40,9 @@ namespace MultiAgent1.VisionAgent.Migrations
 
             modelBuilder.Entity("MultiAgent1.VisionAgent.Models.OutboxMessage", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
                         .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
@@ -78,7 +72,7 @@ namespace MultiAgent1.VisionAgent.Migrations
                 {
                     b.OwnsOne("MultiAgent1.VisionAgent.Data.VisionResult", "Result", b1 =>
                         {
-                            b1.Property<int>("AgentOutputId");
+                            b1.Property<Guid>("AgentOutputId");
 
                             b1.Property<string>("Brand")
                                 .IsRequired()
@@ -112,7 +106,7 @@ namespace MultiAgent1.VisionAgent.Migrations
 
                             b1.OwnsMany("MultiAgent1.VisionAgent.Data.Defect", "Defects", b2 =>
                                 {
-                                    b2.Property<int>("VisionResultAgentOutputId");
+                                    b2.Property<Guid>("VisionResultAgentOutputId");
 
                                     b2.Property<int>("__synthesizedOrdinal")
                                         .ValueGeneratedOnAdd();

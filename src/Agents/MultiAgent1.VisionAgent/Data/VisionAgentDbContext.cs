@@ -9,7 +9,7 @@ public class VisionAgentDbContext(DbContextOptions options) : DbContext(options)
     {
         modelBuilder.Entity<AgentOutput>(entity =>
         {
-            entity.HasKey(x => x.Id);
+            entity.Property(x => x.Id).ValueGeneratedNever();
 
             entity.OwnsOne(x => x.Result, result =>
             {
@@ -17,6 +17,12 @@ public class VisionAgentDbContext(DbContextOptions options) : DbContext(options)
 
                 result.OwnsMany(x => x.Defects);
             });
+        });
+
+        modelBuilder.Entity<OutboxMessage>(entity =>
+        {
+            entity.HasKey(x => x.Id);
+            entity.Property(x => x.Id).ValueGeneratedNever();
         });
     }
 
