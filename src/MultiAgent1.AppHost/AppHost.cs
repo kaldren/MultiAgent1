@@ -34,6 +34,7 @@ var blobs = storageBuilder.AddBlobContainer("blobs");
 
 var postgres = builder.AddPostgres("postgres")
     .WithHostPort(5432);
+    //.WithDataVolume(isReadOnly: false);
 
 var postgresdb = postgres.AddDatabase("visionagent");
 
