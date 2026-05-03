@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MultiAgent1.VisionAgent.Models;
 
 namespace MultiAgent1.VisionAgent.Data;
 
@@ -20,4 +21,6 @@ public class VisionAgentDbContext(DbContextOptions options) : DbContext(options)
     }
 
     public DbSet<AgentOutput> AgentOutput => Set<AgentOutput>();
+
+    public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
 }

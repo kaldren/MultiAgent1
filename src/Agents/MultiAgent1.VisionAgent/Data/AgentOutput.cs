@@ -5,6 +5,9 @@ namespace MultiAgent1.VisionAgent.Data;
 
 // Result JSON:
 // {
+//   "brand": "Toyota",
+//   "model": "Camry",
+//   "year": 2019,
 //   "has_defects": true,
 //   "defects": [
 //     {
@@ -30,6 +33,15 @@ public sealed class AgentOutput
 
 public sealed class VisionResult
 {
+    [JsonPropertyName("brand")]
+    public string Brand { get; set; } = string.Empty;
+
+    [JsonPropertyName("model")]
+    public string Model { get; set; } = string.Empty;
+
+    [JsonPropertyName("year")]
+    public int? Year { get; set; }
+
     [JsonPropertyName("has_defects")]
     public bool HasDefects { get; set; }
 

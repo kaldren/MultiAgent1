@@ -51,7 +51,7 @@ app.MapPost("/send-test-message", async (ServiceBusClient serviceBusClient) =>
             ContentLength = 168357,
             BlobType = "BlockBlob",
             AccessTier = "Default",
-            Url = "http://127.0.0.1:10000/devstoreaccount1/inspections-images/scratch.jpg",
+            Url = "http://127.0.0.1:10000/devstoreaccount1/inspections-images/scratch.jpeg",
             Sequencer = "0000000000000000000000000003CEF500000000006ccd93",
             StorageDiagnostics = new BlobStorageDiagnostics
             {

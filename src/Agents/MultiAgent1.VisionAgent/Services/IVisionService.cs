@@ -4,7 +4,7 @@ namespace MultiAgent1.VisionAgent.Services;
 
 public interface IVisionService
 {
-    Task<AnalysisResponse> AnalyzeImageAsync(
+    Task<VisionAgentResponse> AnalyzeImageAsync(
         byte[] imageData,
         string contentType,
         CancellationToken cancellationToken);

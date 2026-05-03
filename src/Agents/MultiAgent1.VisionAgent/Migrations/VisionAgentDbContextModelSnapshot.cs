@@ -41,18 +41,62 @@ namespace MultiAgent1.VisionAgent.Migrations
                     b.ToTable("agent_output", (string)null);
                 });
 
+            modelBuilder.Entity("MultiAgent1.VisionAgent.Models.OutboxMessage", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Payload")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("payload");
+
+                    b.Property<DateTimeOffset?>("PublishedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("published_at");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("type");
+
+                    b.HasKey("Id")
+                        .HasName("pk_outbox_messages");
+
+                    b.ToTable("outbox_messages", (string)null);
+                });
+
             modelBuilder.Entity("MultiAgent1.VisionAgent.Data.AgentOutput", b =>
                 {
                     b.OwnsOne("MultiAgent1.VisionAgent.Data.VisionResult", "Result", b1 =>
                         {
                             b1.Property<int>("AgentOutputId");
 
+                            b1.Property<string>("Brand")
+                                .IsRequired()
+                                .HasJsonPropertyName("brand");
+
                             b1.Property<bool>("HasDefects")
                                 .HasJsonPropertyName("has_defects");
+
+                            b1.Property<string>("Model")
+                                .IsRequired()
+                                .HasJsonPropertyName("model");
 
                             b1.Property<string>("Summary")
                                 .IsRequired()
                                 .HasJsonPropertyName("summary");
+
+                            b1.Property<int?>("Year")
+                                .HasJsonPropertyName("year");
 
                             b1.HasKey("AgentOutputId");
 
