@@ -35,14 +35,8 @@ var outboxTopic = serviceBus.AddServiceBusTopic("vision-analysis-completed")
         subscription.LockDuration = TimeSpan.FromMinutes(5);
     });
 
-var storageBuilder = builder.AddAzureStorage("storage");
-
-if (builder.ExecutionContext.IsRunMode && builder.Environment.IsDevelopment())
-{
-    storageBuilder.RunAsEmulator(azurite => { });
-}
-
-var blobs = storageBuilder.AddBlobContainer("blobs");
+var storage = builder.AddAzureStorage("storage").RunAsEmulator(a => a.WithBlobPort(10000));
+var blobs = storage.AddBlobs("blobs");
 
 var postgres = builder.AddPostgres("postgres")
     .WithHostPort(5432);
@@ -51,26 +45,30 @@ var postgres = builder.AddPostgres("postgres")
 var postgresdb = postgres.AddDatabase("visionagent");
 
 var migrations = builder.AddProject<Projects.MultiAgent1_MigrationService>("migrations")
-    .WithReference(postgresdb)
-    .WaitFor(postgresdb);
+    .WaitFor(postgresdb)
+    .WithReference(postgresdb);
 
 var visionAgent = builder.AddProject<Projects.MultiAgent1_VisionAgent>("vision-agent")
     .WaitFor(serviceBus)
-    .WaitFor(storageBuilder)
+    .WaitFor(storage)
     .WaitFor(postgres)
     .WaitFor(postgresdb)
+    .WaitFor(blobs)
     .WithReference(serviceBus)
     .WithReference(postgresdb)
     .WithReference(migrations)
+    .WithReference(blobs)
     .WaitForCompletion(migrations);
 
 builder.AddProject<Projects.MultiAgent1_API>("api")
+    .WaitFor(serviceBus)
+    .WaitFor(blobs)
+    .WaitFor(visionAgent)
     .WithReference(serviceBus)
-    .WithReference(blobs)
-    .WaitFor(visionAgent);
+    .WithReference(blobs);
 
-builder.AddProject<Projects.MultiAgent1_MigrationService>("multiagent1-migrationservice");
-
-builder.AddProject<Projects.MultiAgent1_CostEstimationAgent>("multiagent1-costestimationagent");
+builder.AddProject<Projects.MultiAgent1_CostEstimationAgent>("cost-estimation-agent")
+    .WaitFor(visionAgent)
+    .WithReference(serviceBus);
 
 builder.Build().Run();

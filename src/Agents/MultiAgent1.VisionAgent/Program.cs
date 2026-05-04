@@ -1,11 +1,12 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using MultiAgent1.VisionAgent.Data;
 using MultiAgent1.VisionAgent.Services;
 using MultiAgent1.VisionAgent.Workers;
 
 AppContext.SetSwitch("Azure.Experimental.EnableActivitySource", true);
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = Host.CreateApplicationBuilder(args);
 
 builder.AddServiceDefaults();
 
@@ -23,8 +24,5 @@ builder.AddNpgsqlDbContext<VisionAgentDbContext>(connectionName: "visionagent", 
     options.UseSnakeCaseNamingConvention();
 });
 
-var app = builder.Build();
-
-app.UseHttpsRedirection();
-
-app.Run();
+var host = builder.Build();
+host.Run();

@@ -1,6 +1,0 @@
-@MultiAgent1.CostEstimationAgent_HostAddress = http://localhost:5023
-
-GET {{MultiAgent1.CostEstimationAgent_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

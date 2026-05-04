@@ -33,12 +33,12 @@ public class AgentWorker : IHostedService, IDisposable
     {
         _processor?.DisposeAsync().GetAwaiter().GetResult();
         _serviceBusClient?.DisposeAsync().GetAwaiter().GetResult();
-        _logger.LogInformation("Worker disposed.");
+        _logger.LogInformation($"{nameof(AgentWorker)} disposed.");
     }
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Worker started.");
+        _logger.LogInformation($"{nameof(AgentWorker)} started.");
 
         _processor = _serviceBusClient.CreateProcessor(
             "inspection-photo-uploaded",

@@ -77,11 +77,12 @@ app.MapPost("/send-test-message", async (ServiceBusClient serviceBusClient) =>
 app.MapPost("/upload", async (IFormFile file, BlobServiceClient blobServiceClient) =>
 {
     var containerClient = blobServiceClient.GetBlobContainerClient("inspections-images");
+    await containerClient.CreateIfNotExistsAsync();
     var blobClient = containerClient.GetBlobClient(file.FileName);
 
     using (var stream = file.OpenReadStream())
     {
-        await blobClient.UploadAsync(stream, true);
+        await blobClient.UploadAsync(stream, overwrite: true);
     }
 
     return Results.Ok(new { file.FileName });
