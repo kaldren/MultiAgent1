@@ -72,7 +72,7 @@ public class VisionService : IVisionService
             "      \"confidence\": <0.0–1.0>\n" +
             "    }\n" +
             "  ],\n" +
-            "  \"summary\": \"<one sentence summary>\"\n" +
+            "  \"summary\": \"<summary of the vehicle (brand, model, year), its condition and any detected defects>\"\n" +
             "}\n" +
             "Return only the JSON object with no additional text.");
         var imagePart = ChatMessageContentPart.CreateImagePart(

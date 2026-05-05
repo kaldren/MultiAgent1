@@ -35,12 +35,19 @@ var outboxTopic = serviceBus.AddServiceBusTopic("vision-analysis-completed")
         subscription.LockDuration = TimeSpan.FromMinutes(5);
     });
 
+// Azure AI Search
+var existingSearchName = builder.AddParameter("existingSearchName");
+var existingSearchResourceGroup = builder.AddParameter("existingSearchResourceGroup");
+
+var search = builder.AddAzureSearch("search")
+    .AsExisting(existingSearchName, existingSearchResourceGroup);
+
 var storage = builder.AddAzureStorage("storage").RunAsEmulator(a => a.WithBlobPort(10000));
 var blobs = storage.AddBlobs("blobs");
 
 var postgres = builder.AddPostgres("postgres")
     .WithHostPort(5432);
-    //.WithDataVolume(isReadOnly: false);
+//.WithDataVolume(isReadOnly: false);
 
 var postgresdb = postgres.AddDatabase("visionagent");
 
@@ -69,6 +76,7 @@ builder.AddProject<Projects.MultiAgent1_API>("api")
 
 builder.AddProject<Projects.MultiAgent1_CostEstimationAgent>("cost-estimation-agent")
     .WaitFor(visionAgent)
-    .WithReference(serviceBus);
+    .WithReference(serviceBus)
+    .WithReference(search);
 
 builder.Build().Run();

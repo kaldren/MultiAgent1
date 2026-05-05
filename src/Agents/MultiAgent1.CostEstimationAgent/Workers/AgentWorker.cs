@@ -1,4 +1,5 @@
 using Azure.Messaging.ServiceBus;
+using Azure.Search.Documents.Indexes;
 using System.Text.Json;
 
 namespace MultiAgent1.CostEstimationAgent.Workers;
@@ -9,21 +10,26 @@ public class AgentWorker : IHostedService, IDisposable
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly ILogger<AgentWorker> _logger;
     private ServiceBusProcessor? _processor;
+    private SearchIndexClient? _searchIndexClient;
 
     public AgentWorker(
         ServiceBusClient serviceBusClient,
         IServiceScopeFactory scopeFactory,
-        ILogger<AgentWorker> logger)
+        ILogger<AgentWorker> logger,
+        SearchIndexClient searchIndexClient)
     {
         _serviceBusClient = serviceBusClient;
         _scopeFactory = scopeFactory;
         _logger = logger;
+        _searchIndexClient = searchIndexClient;
     }
 
     public void Dispose()
     {
         _processor?.DisposeAsync().GetAwaiter().GetResult();
         _serviceBusClient?.DisposeAsync().GetAwaiter().GetResult();
+        // Dispose of AI Search
+        _searchIndexClient = null;
         _logger.LogInformation($"{nameof(AgentWorker)} disposed.");
     }
 
@@ -64,6 +70,12 @@ public class AgentWorker : IHostedService, IDisposable
         {
             string body = args.Message.Body.ToString();
             _logger.LogInformation("CostEstimationAgent: Received message: {MessageId}", args.Message.MessageId);
+
+            // Search for the image analysis results in Azure AI Search
+            var searchClient = _searchIndexClient!.GetSearchClient("rag-1777964897560");
+            var searchResults = await searchClient.SearchAsync<JsonDocument>(body);
+            // Process the search results and perform cost estimation logic here
+            // ...
 
             await args.CompleteMessageAsync(args.Message);
             _logger.LogInformation("Message {MessageId} completed.", args.Message.MessageId);
